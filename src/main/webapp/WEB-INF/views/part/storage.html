@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Nedo-PDM</title>
+    <style>
+        .header {
+            border: 1px solid black;
+            box-shadow: 8px 8px 5px #444;
+            padding: 8px 12px;
+            background-image: linear-gradient(180deg, #fff, #ddd 40%, #ccc);
+            position: relative;
+            margin-bottom: 10px;
+        }
+    </style>
+    <style>
+        .left {
+            position: absolute;
+            left: 5px;
+            top: auto;
+            bottom: auto;
+        }
+    </style>
+    <style>
+        .right {
+            position: absolute;
+            right: 5px;
+            top: auto;
+            bottom: auto;
+        }
+    </style>
+    <style>
+        .container {
+            border: 1px solid black;
+            box-shadow: 8px 8px 5px #444;
+            padding: 8px 12px;
+            background-image: linear-gradient(180deg, #fff, #ddd 40%, #ccc);
+            margin-bottom: 10px;
+        }
+    </style>
+    <style>
+        .task {
+            border: 1px solid black;
+            padding: 8px 12px;
+        }
+    </style>
+    <style>
+        .hrefbutton {
+            background: white;
+            color: red;
+            padding: 4px 6px;
+            border-radius: 3px;
+            border: 1px solid black;
+            text-decoration: none;
+        }
+    </style>
+    <style>
+        .tasktext {
+            width: 100%;
+            box-sizing: border-box;
+            min-height: 100px;
+            resize: none;
+        }
+    </style>
+</head>
+<body style="zoom: 1.5">
+
+<div class="header">
+    <table style="width: 100%">
+        <tr>
+            <td width="100%">
+                <a style="font-size: 25px; text-decoration: none" th:href="@{/main(login=${user.getLogin()}, password=${user.getPassword()})}"><b>Nedo-PDM</b></a>
+            </td>
+            <td>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <b>Вы авторизовались как:</b> <a th:text="${user.getLogin()}"/>
+            </td>
+            <td>
+                <a th:href="@{/help}">Помощь</a>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<div class="container">
+    <form th:method="POST" th:action="@{/part/storage(login=${user.getLogin()}, password=${user.getPassword()})}"
+          th:object="${invoice}">
+        <button style="background: white; color: red" type="submit" value="save" name="action">Сохранить</button>
+        <button style="background: white" type="submit" value="add" name="action">Добавить</button>
+        <button style="background: white" type="submit" value="pop" name="action">Убрать</button>
+        <br/>
+        <br/>
+        <table style="border:1px solid black; width: 100%">
+            <thead>
+                <tr>
+                    <th>Действие</th>
+                    <th>Деталь</th>
+                    <th>Количество</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="line, itemStat : *{lines}">
+                    <td style="width: 33.3%">
+                        <select th:field="*{lines[__${itemStat.index}__].action}" style="width: 95%">
+                            <option th:value="get" th:text="Взял"/>
+                            <option th:value="put" th:text="Положил"/>
+                        </select>
+                    </td>
+                    <td style="width: 33.3%">
+                        <select th:field="*{lines[__${itemStat.index}__].partId}" style="width: 95%">
+                            <option th:each="part : ${parts}"
+                                    th:value="${part.getId()}"
+                                    th:text="${part.getDescription()}"/>
+                        </select>
+                    </td>
+                    <td style="width: 33.3%">
+                        <input type="number" th:field="*{lines[__${itemStat.index}__].count}" style="width: 95%">
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </form>
+</div>
+
+</body>
+</html>
