@@ -52,7 +52,7 @@ public class PartDAO {
     }
 
     public List<Part> getAllParts() {
-        String sql = "SELECT * FROM parts;";
+        String sql = "SELECT * FROM parts ORDER BY id;";
         ResultSet result = dbConnector.executeSelect(sql);
         List<Part> parts = new ArrayList<>();
         while (true) {
@@ -136,7 +136,7 @@ public class PartDAO {
     }
 
     public List<Part> getChildParts(Part root) {
-        String sql = String.format("SELECT * FROM parts WHERE array_position(parents, %d) IS NOT NULL;",
+        String sql = String.format("SELECT * FROM parts WHERE array_position(parents, %d) IS NOT NULL ORDER BY id;",
                 root.getId());
         ResultSet result = dbConnector.executeSelect(sql);
         List<Part> parts = new ArrayList<>();
@@ -202,10 +202,14 @@ public class PartDAO {
         } else {
             String array = "{";
             List<Long> parents = partForUpdate.getParents();
-            for (int i = 0; i < parents.size() - 1; i++) {
-                array = array + parents.get(i) + ", ";
+            for (int i = 0; i < parents.size(); i++) {
+                if (i < parents.size() - 1) {
+                    array = array + parents.get(i) + ", ";
+                }
+                else {
+                    array = array + parents.get(i) + "}";
+                }
             }
-            array = array + parents.get(parents.size() - 1) + "}";
             sql = String.format("UPDATE parts SET (description, name, parents, text, count) " +
                             "= ('%s', '%s', '%s', '%s', %d) WHERE id=%d;",
                     partForUpdate.getDescription(),

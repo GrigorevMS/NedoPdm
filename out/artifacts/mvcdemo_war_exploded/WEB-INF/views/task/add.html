@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Добавление новой задачи</title>
+    <style>
+        .header {
+            border: 1px solid black;
+            box-shadow: 8px 8px 5px #444;
+            padding: 8px 12px;
+            background-image: linear-gradient(180deg, #fff, #ddd 40%, #ccc);
+            position: relative;
+            margin-bottom: 10px;
+        }
+    </style>
+    <style>
+        .left {
+            position: absolute;
+            left: 5px;
+            top: auto;
+            bottom: auto;
+        }
+    </style>
+    <style>
+        .right {
+            position: absolute;
+            right: 5px;
+            top: auto;
+            bottom: auto;
+        }
+    </style>
+    <style>
+        .container {
+            border: 1px solid black;
+            box-shadow: 8px 8px 5px #444;
+            padding: 8px 12px;
+            background-image: linear-gradient(180deg, #fff, #ddd 40%, #ccc);
+            margin-bottom: 10px;
+        }
+    </style>
+    <style>
+        .task {
+            border: 1px solid black;
+            padding: 8px 12px;
+        }
+    </style>
+    <style>
+        .hrefbutton {
+            background: white;
+            color: red;
+            padding: 4px 6px;
+            border-radius: 3px;
+            border: 1px solid black;
+            text-decoration: none;
+        }
+    </style>
+    <style>
+        .tasktext {
+            width: 100%;
+            box-sizing: border-box;
+            min-height: 300px;
+            resize: none;
+        }
+    </style>
+</head>
+<body style="zoom: 1.5">
+<div class="header">
+    <table style="width: 100%">
+        <tr>
+            <td width="100%">
+                <a style="font-size: 25px; text-decoration: none" th:href="@{/main(login=${user.getLogin()}, password=${user.getPassword()})}"><b>Nedo-PDM</b></a>
+            </td>
+            <td>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <b>Вы авторизовались как:</b> <a th:text="${user.getLogin()}"/>
+            </td>
+            <td>
+                <a th:href="@{/help}">Помощь</a>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<div class="container">
+    <h4>Добавление новой задачи:</h4>
+    <form th:method="POST" th:action="@{/task/add(login=${user.getLogin()}, password=${user.getPassword()})}" th:object="${newTask}">
+        <table>
+            <tr>
+                <td>
+                    <input style="background: white;
+                                        color: red;
+                                        border-radius: 3px;
+                                        font-size: 20px;
+                                        margin-bottom: 10px;
+                                        padding: 4px 6px"
+                           type="submit" value="Сохранить">
+                </td>
+            </tr>
+
+            <tr>
+                <td><label for="executor"><b>Исполнитель: </b></label>
+                <td>
+                    <select style="width: 300px; margin: 1px 2px" th:field="*{executor}" name="executor" id="executor">
+                        <option th:each="user : ${users}" th:value="${user.getId()}" th:text="${user.getSurname()} + ' ' + ${user.getName()}"/>
+                    </select>
+            </tr>
+            <tr>
+                <td><label for="target"><b>Деталь: </b></label>
+                <td>
+                    <select style="width: 300px; margin: 1px 2px" th:field="*{target}" name="target" id="target">
+                        <option th:each="part : ${parts}" th:value="${part.getId()}" th:text="${part.getDescription()}"/>
+                    </select>
+            </tr>
+            <tr>
+                <td><label for="count"><b>Количество: </b></label></td>
+                <td>
+                    <input style="width: 300px" type="number" th:field="*{count}" name="count" id="count">
+                </td>
+            </tr>
+            <tr>
+                <td><label for="text"><b>Описание: </b></label></td>
+                <td style="width: 100%"></td>
+            </tr>
+
+            <tr>
+                <td colspan="2">
+                    <textarea class="tasktext" autocomplete="off" th:field="*{text}" name="text" id="text"/>
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+</body>
+</html>
