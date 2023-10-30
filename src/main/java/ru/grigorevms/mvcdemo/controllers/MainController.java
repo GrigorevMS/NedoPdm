@@ -35,8 +35,6 @@ public class MainController {
 
             model.addAttribute("parts", partDAO.getPartsTree());
 
-            System.out.println(user.toString());
-
             return "main/main";
         }
         return "redirect:/login";

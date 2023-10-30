@@ -8,10 +8,13 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ru.grigorevms.mvcdemo.dao.PartDAO;
 import ru.grigorevms.mvcdemo.dao.TaskDAO;
 import ru.grigorevms.mvcdemo.dao.UserDAO;
+import ru.grigorevms.mvcdemo.models.Part;
 import ru.grigorevms.mvcdemo.models.Task;
+import ru.grigorevms.mvcdemo.models.TaskFilterLine;
 import ru.grigorevms.mvcdemo.models.User;
 
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 @RequestMapping("/task")
 @Controller
@@ -172,9 +175,46 @@ public class TaskController {
             atr.addAttribute("password", user.getPassword());
             if (user.getRole().equals("admin")) {
                 model.addAttribute("tasks", taskDao.getAllTasks());
+
+                List<User> users = userDao.getUsers();
+                users.add(0, new User(-1, "", ""));
+                model.addAttribute("users", users);
+
+                List<Part> parts = partDAO.getAllParts();
+                parts.add(0, new Part((long)-1, "", ""));
+                model.addAttribute("parts", parts);
+
+                model.addAttribute("filters", new TaskFilterLine());
                 return "task/all";
             }
             return "redirect:/main";
+        }
+        return "redirect:/login";
+    }
+
+    @PostMapping("/all")
+    public String updateShowAllTasks(@ModelAttribute("user") User user,
+                                     @ModelAttribute("filters") TaskFilterLine filterLine,
+                                     RedirectAttributes atr,
+                                     Model model) {
+        if (userDao.checkUser(user.getLogin(), user.getPassword())) {
+            user = userDao.getUser(user.getLogin());
+            atr.addAttribute("login", user.getLogin());
+            atr.addAttribute("password", user.getPassword());
+            if (user.getRole().equals("admin")) {
+                model.addAttribute("tasks", taskDao.getTasksWithFilter(filterLine));
+
+                List<User> users = userDao.getUsers();
+                users.add(0, new User(-1, "", ""));
+                model.addAttribute("users", users);
+
+                List<Part> parts = partDAO.getAllParts();
+                parts.add(0, new Part((long)-1, "", ""));
+                model.addAttribute("parts", parts);
+
+                return "task/all";
+            }
+            return "redirect: /main";
         }
         return "redirect:/login";
     }
@@ -188,7 +228,9 @@ public class TaskController {
             user = userDao.getUser(user.getLogin());
             atr.addAttribute("login", user.getLogin());
             atr.addAttribute("password", user.getPassword());
-            if (user.getRole().equals("admin")) {
+
+            Task task = taskDao.getTaskById(id);
+            if (user.getRole().equals("admin") && !task.getStatus().equals("finished")) {
                 taskDao.deleteTask(taskDao.getTaskById(id));
                 return "redirect:/main";
             }

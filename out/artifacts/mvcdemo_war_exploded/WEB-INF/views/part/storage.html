@@ -113,7 +113,7 @@
                         <select th:field="*{lines[__${itemStat.index}__].partId}" style="width: 95%">
                             <option th:each="part : ${parts}"
                                     th:value="${part.getId()}"
-                                    th:text="${part.getDescription()}"/>
+                                    th:text="${part.getDescription()} + ' - ' + ${part.getName()}"/>
                         </select>
                     </td>
                     <td style="width: 33.3%">

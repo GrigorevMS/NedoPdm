@@ -11,6 +11,11 @@ public class Part {
     private Integer count;
     private Integer level;
 
+    public Part(Long id, String description, String name) {
+        this.id = id;
+        this.description = description;
+        this.name = name;
+    }
     public Part(Long id, String description, String name, List<Long> parents, String text, Integer count) {
         this.id = id;
         this.description = description;

@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.grigorevms.mvcdemo.models.Part;
 import ru.grigorevms.mvcdemo.models.Task;
+import ru.grigorevms.mvcdemo.models.TaskFilterLine;
 import ru.grigorevms.mvcdemo.models.User;
 
 import java.sql.ResultSet;
@@ -183,6 +184,59 @@ public class TaskDAO {
             }
         }
         return tasks;
+    }
+
+    public List<Task> getTasksWithFilter(TaskFilterLine filterLine) {
+        if (filterLine.getUserId() == -1 && filterLine.getPartId() == -1 && filterLine.getStatus().equals("all")) {
+            return getAllTasks();
+        }
+        else {
+            String sql = "SELECT * FROM tasks WHERE";
+            List<String> filters = new ArrayList<>();
+            if (filterLine.getUserId() != -1)
+                filters.add(String.format("executor=%d", filterLine.getUserId()));
+            if (filterLine.getPartId() != -1)
+                filters.add(String.format("target=%d", filterLine.getPartId()));
+            if (!filterLine.getStatus().equals("all")) {
+                if (filterLine.getStatus().equals("notstarted"))
+                    filters.add(String.format("status='%s'", "not started"));
+                else if (filterLine.getStatus().equals("inwork"))
+                    filters.add(String.format("status='%s'", "in work"));
+                else if (filterLine.getStatus().equals("finished"))
+                    filters.add(String.format("status='%s'", "finished"));
+            }
+            for (int i = 0; i < filters.size(); i++) {
+                if (i == 0)
+                    sql = sql + " " + filters.get(i);
+                else
+                    sql = sql + " AND " + filters.get(i);
+            }
+            sql = sql + ";";
+            ResultSet result = dbConnector.executeSelect(sql);
+            List<Task> tasks = new ArrayList<>();
+            while (true) {
+                try {
+                    if (!result.next()) break;
+                    User executor = userDao.getUser(result.getInt("executor"));
+                    User client = userDao.getUser(result.getInt("client"));
+                    Part target = partDAO.getPart(result.getLong("target"));
+                    tasks.add(new Task(result.getInt("id"),
+                            result.getInt("executor"),
+                            executor.getName() + " " + executor.getSurname(),
+                            result.getInt("client"),
+                            client.getName() + " " + client.getSurname(),
+                            result.getString("text"),
+                            result.getInt("target"),
+                            target.getDescription(),
+                            result.getInt("count"),
+                            result.getString("status"),
+                            result.getTimestamp("time")));
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }
+            return tasks;
+        }
     }
 
     public int startTask(Task taskForStart) {
