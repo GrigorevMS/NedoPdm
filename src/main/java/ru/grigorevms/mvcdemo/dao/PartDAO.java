@@ -188,6 +188,24 @@ public class PartDAO {
         return dbConnector.executeUpdate(sql);
     }
 
+    public int addDeletedPart(Part newPart) {
+        String sql = "";
+        if (newPart.getParents() == null) {
+            sql = String.format("INSERT INTO deletedparts (description, name, parents, text, count) VALUES ('%s', '%s', %d, '%s', %d);",
+                    newPart.getDescription(), newPart.getName(), newPart.getParents(), newPart.getText(), newPart.getCount());
+        } else {
+            String array = "{";
+            List<Long> parents = newPart.getParents();
+            for (int i = 0; i < parents.size() - 1; i++) {
+                array = array + parents.get(i) + ", ";
+            }
+            array = array + parents.get(parents.size() - 1) + "}";
+            sql = String.format("INSERT INTO deletedparts (description, name, parents, text, count) VALUES ('%s', '%s', '%s', '%s', %d);",
+                    newPart.getDescription(), newPart.getName(), array, newPart.getText(), newPart.getCount());
+        }
+        return dbConnector.executeUpdate(sql);
+    }
+
     public int updatePart(Part partForUpdate) {
         String sql = "";
         if (partForUpdate.getParents() == null) {

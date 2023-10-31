@@ -255,6 +255,12 @@ public class TaskDAO {
         return  dbConnector.executeUpdate(sql);
     }
 
+    public int adddeletedTask(Task newTask) {
+        String sql = String.format("INSERT INTO deletedtasks (id, executor, client, text, target, count, status) VALUES (%d, %d, %d, '%s', %d, %d, 'not started')",
+                newTask.getId(), newTask.getExecutor(), newTask.getClient(), newTask.getText(), newTask.getTarget(), newTask.getCount());
+        return  dbConnector.executeUpdate(sql);
+    }
+
     public int deleteTask(Task taskForDelete) {
         String sql = String.format("DELETE FROM tasks WHERE id=%d;", taskForDelete.getId());
         return dbConnector.executeUpdate(sql);

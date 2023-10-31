@@ -5,6 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import ru.grigorevms.mvcdemo.dao.Logger;
 import ru.grigorevms.mvcdemo.dao.PartDAO;
 import ru.grigorevms.mvcdemo.dao.TaskDAO;
 import ru.grigorevms.mvcdemo.dao.UserDAO;
@@ -25,6 +26,8 @@ public class TaskController {
     private TaskDAO taskDao;
     @Autowired
     private PartDAO partDAO;
+    @Autowired
+    private Logger logger;
 
     @GetMapping("/task/{id}")
     public String redirectTask(@ModelAttribute("user") User user,
@@ -65,6 +68,7 @@ public class TaskController {
             model.addAttribute("task", task);
             if (task.getStatus().equals("not started")) {
                 taskDao.startTask(task);
+                logger.writeLog(user, "start task", Integer.toString(task.getId()));
             }
             return "redirect:/task/{id}";
         }
@@ -85,6 +89,7 @@ public class TaskController {
             model.addAttribute("task", task);
             if (task.getStatus().equals("in work")) {
                 taskDao.finishTask(task);
+                logger.writeLog(user, "finish task", Integer.toString(task.getId()));
             }
             return "redirect:/task/{id}";
         }
@@ -158,6 +163,10 @@ public class TaskController {
                 newTask.setClient(user.getId());
 
                 taskDao.addTask(newTask);
+                logger.writeLog(user, "add task", "Executor - " + newTask.getExecutor() +
+                                                            "\nClient - " + newTask.getClient() +
+                                                            "\nTarget - " + newTask.getTarget() +
+                                                            "\nText - " + newTask.getText());
 
                 return "redirect:/main";
             }
@@ -231,7 +240,10 @@ public class TaskController {
 
             Task task = taskDao.getTaskById(id);
             if (user.getRole().equals("admin") && !task.getStatus().equals("finished")) {
-                taskDao.deleteTask(taskDao.getTaskById(id));
+                taskDao.deleteTask(task);
+                taskDao.adddeletedTask(task);
+                logger.writeLog(user, "delete task", Integer.toString(id));
+
                 return "redirect:/main";
             }
             return "redirect:/task/{id}";

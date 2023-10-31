@@ -5,10 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import ru.grigorevms.mvcdemo.dao.DatabaseConnector;
-import ru.grigorevms.mvcdemo.dao.PartDAO;
-import ru.grigorevms.mvcdemo.dao.TaskDAO;
-import ru.grigorevms.mvcdemo.dao.UserDAO;
+import ru.grigorevms.mvcdemo.dao.*;
 import ru.grigorevms.mvcdemo.models.Part;
 import ru.grigorevms.mvcdemo.models.StorageInvoice;
 import ru.grigorevms.mvcdemo.models.StorageInvoiceLine;
@@ -27,6 +24,8 @@ public class PartController {
     private TaskDAO taskDAO;
     @Autowired
     private PartDAO partDAO;
+    @Autowired
+    private Logger logger;
 
     @GetMapping("/{id}")
     public String seePartInformation(@ModelAttribute("user") User user,
@@ -88,6 +87,7 @@ public class PartController {
             if (newPart.getParents().size() == 0)  newPart.setParents(null);
 
             partDAO.addPart(newPart);
+            logger.writeLog(user, "add part", newPart.toString());
 
             return "redirect:/main";
         }
@@ -135,6 +135,8 @@ public class PartController {
             if (partForUpdate.getParents().size() == 0)  partForUpdate.setParents(null);
 
             partDAO.updatePart(partForUpdate);
+            logger.writeLog(user, "update part", partForUpdate.toString());
+
             return "redirect:/main";
         }
         return "redirect:/login";
@@ -149,7 +151,11 @@ public class PartController {
             user = userDAO.getUser(user.getLogin());
             atr.addAttribute("login", user.getLogin());
             atr.addAttribute("password", user.getPassword());
+
             partDAO.deletePart(partForDelete);
+            partDAO.addDeletedPart(partForDelete);
+            logger.writeLog(user, "delete part", partForDelete.toString());
+
             return "redirect:/main";
         }
         return "redirect:/login";
@@ -182,18 +188,21 @@ public class PartController {
             atr.addAttribute("password", user.getPassword());
 
             List<StorageInvoiceLine> lines = invoice.getLines();
+            String info = "";
             for (StorageInvoiceLine line : lines) {
                 Part part = partDAO.getPart(line.getPartId());
                 int count = part.getCount();
                 if (line.getAction().equals("get")) {
                     count -= line.getCount();
+                    info += "get, " + part.getId() + ", " + part.toString() + ", " + line.getCount() + "\n";
                 } else if (line.getAction().equals("put")) {
                     count += line.getCount();
+                    info += "put, " + part.getId() + ", " + part.toString() + ", " + line.getCount() + "\n";
                 }
                 part.setCount(count);
                 partDAO.updatePart(part);
             }
-
+            logger.writeLog(user, "storage", info);
             return "redirect:/main";
         }
         return "redirect:/login";

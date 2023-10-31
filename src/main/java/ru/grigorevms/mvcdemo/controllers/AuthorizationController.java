@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import ru.grigorevms.mvcdemo.dao.Logger;
 import ru.grigorevms.mvcdemo.dao.UserDAO;
 import ru.grigorevms.mvcdemo.models.User;
 
@@ -14,6 +15,8 @@ import ru.grigorevms.mvcdemo.models.User;
 public class AuthorizationController {
     @Autowired
     private UserDAO userDao;
+    @Autowired
+    private Logger logger;
 
     @GetMapping("/")
     public String mainPageController() {
@@ -31,6 +34,7 @@ public class AuthorizationController {
         String password = user.getPassword();
         if (userDao.checkUser(login, password)) {
             user = userDao.getUser(login);
+            logger.writeLog(user, "login", "Start session");
 
             atr.addAttribute("login", user.getLogin());
             atr.addAttribute("password", user.getPassword());

@@ -11,6 +11,7 @@ public class Part {
     private Integer count;
     private Integer level;
 
+    public Part() {}
     public Part(Long id, String description, String name) {
         this.id = id;
         this.description = description;
