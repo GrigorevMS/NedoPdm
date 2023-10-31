@@ -39,7 +39,7 @@ public class DatabaseConnector {
                         sqlFinal += "'";
                     }
                 }
-                logStatement.executeUpdate(String.format("INSERT INTO logs (sql_text) VALUES ('%s');", sqlFinal));
+                logStatement.executeUpdate(String.format("INSERT INTO sqllogs (sql_text) VALUES ('%s');", sqlFinal));
                 statement = dbConnection.createStatement();
                 return statement.executeUpdate(query);
             } catch (SQLException throwables) {
@@ -64,7 +64,7 @@ public class DatabaseConnector {
                         sqlFinal += "'";
                     }
                 }
-                logStatement.executeUpdate(String.format("INSERT INTO logs (sql_text) VALUES ('%s');", sqlFinal));
+                logStatement.executeUpdate(String.format("INSERT INTO sqllogs (sql_text) VALUES ('%s');", sqlFinal));
                 statement = dbConnection.prepareStatement(query);
                 boolean hasResult = statement.execute();
                 if (hasResult) {
