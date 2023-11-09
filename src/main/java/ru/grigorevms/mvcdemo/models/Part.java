@@ -31,6 +31,10 @@ public class Part {
         return String.format("%s - %s", description, name);
     }
 
+    public String getStringForm() {
+        return String.format("%d, %s, %s, %s", id, description, name, text);
+    }
+
     public Long getId() {
         return id;
     }

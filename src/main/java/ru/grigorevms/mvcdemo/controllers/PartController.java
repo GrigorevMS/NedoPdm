@@ -145,6 +145,7 @@ public class PartController {
     @GetMapping("/{id}/delete")
     public String deletePart(@ModelAttribute("user") User user,
                              @ModelAttribute("partForDelete") Part partForDelete,
+                             @PathVariable("id") Long id,
                              RedirectAttributes atr,
                              Model model) {
         if (userDAO.checkUser(user.getLogin(), user.getPassword())) {
@@ -152,6 +153,9 @@ public class PartController {
             atr.addAttribute("login", user.getLogin());
             atr.addAttribute("password", user.getPassword());
 
+            partForDelete = partDAO.getPart(id);
+
+            System.out.println(partForDelete.getStringForm());
             partDAO.deletePart(partForDelete);
             partDAO.addDeletedPart(partForDelete);
             logger.writeLog(user, "delete part", partForDelete.toString());
