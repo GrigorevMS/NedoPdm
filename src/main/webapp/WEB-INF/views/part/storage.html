@@ -87,7 +87,8 @@
 
 <div class="container">
     <form th:method="POST" th:action="@{/part/storage(login=${user.getLogin()}, password=${user.getPassword()})}"
-          th:object="${invoice}">
+          th:object="${invoice}"
+          onsubmit="if (event.submitter.value == 'save'){if(!confirm('Вы уверены, что хотите подать ведомость?')){return false;}}">
         <button style="background: white; color: red" type="submit" value="save" name="action">Сохранить</button>
         <button style="background: white" type="submit" value="add" name="action">Добавить</button>
         <button style="background: white" type="submit" value="pop" name="action">Убрать</button>

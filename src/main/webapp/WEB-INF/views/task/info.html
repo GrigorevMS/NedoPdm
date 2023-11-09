@@ -64,6 +64,7 @@
     </style>
 </head>
 <body style="zoom: 1.5">
+
 <div class="header">
     <table style="width: 100%">
         <tr>
@@ -88,15 +89,18 @@
     <h4>Информация о детали:</h4>
     <a class="hrefbutton" th:href="@{/task/{id}/start(id=${task.getId()},
                                                     login=${user.getLogin()},
-                                                    password=${user.getPassword()})}">
+                                                    password=${user.getPassword()})}"
+       onclick="if(!confirm('Вы уверены, что хотите взять задачу в работу?')){return false;}">
         Взять в работу</a>
     <a class="hrefbutton" th:href="@{/task/{id}/finish(id=${task.getId()},
                                                     login=${user.getLogin()},
-                                                    password=${user.getPassword()})}">
+                                                    password=${user.getPassword()})}"
+       onclick="if(!confirm('Вы уверены, что хотите закончить работу над задачей?')){return false;}">
         Закончить работу</a>
     <a class="hrefbutton" th:href="@{/task/{id}/delete(id=${task.getId()},
                                                         login=${user.getLogin()},
-                                                        password=${user.getPassword()})}">
+                                                        password=${user.getPassword()})}"
+       onclick="if(!confirm('Вы уверены, что хотите удалить задачу?')){return false;}">
         Удалить</a><br/><br/>
     <b>Исполнитель: </b><a th:text="${task.getExecutorStr()}"/><br/>
     <b>Заказчик: </b><a th:text="${task.getClientStr()}"/><br/>

@@ -92,8 +92,10 @@
         Изменить данные</a>
     <a class="hrefbutton" th:href="@{/part/{id}/delete(id=${part.getId()},
                                                     login=${user.getLogin()},
-                                                    password=${user.getPassword()})}">
+                                                    password=${user.getPassword()})}"
+       onclick="if(!confirm('Вы уверены, что хотите удалить деталь?')){return false;}">
         Удалить деталь</a><br/><br/>
+
     <b>Обозначение: </b><a th:text="${part.getDescription()}"/><br/>
     <b>Описание: </b><a th:text="${part.getName()}"/><br/>
     <b>Принадлежит: </b><a th:each="description : ${parents}" th:text="${description} + '; '"/><br/>

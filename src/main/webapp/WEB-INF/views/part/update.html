@@ -89,7 +89,8 @@
     <form th:method="POST" th:action="@{/part/{id}/update(id=${partForUpdate.getId()},
                                                             login=${user.getLogin()},
                                                             password=${user.getPassword()})}"
-          th:object="${partForUpdate}">
+          th:object="${partForUpdate}"
+          onsubmit="if(!confirm('Вы уверены, что хотите сохранить деталь?')){return false;}">
         <table>
             <tr>
                 <td>

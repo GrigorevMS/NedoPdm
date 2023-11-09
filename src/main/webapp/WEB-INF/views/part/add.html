@@ -64,6 +64,17 @@
     </style>
 </head>
 <body style="zoom: 1.5">
+<script type="text/javascript">
+    function add_confirmation(t) {
+        var answer = confirm("Вы уверены, что хотите сохранить деталь?")
+        if (answer)
+        {
+            t.form.submit();
+        }
+        return false;
+    }
+</script>
+
 <div class="header">
     <table style="width: 100%">
         <tr>
@@ -86,7 +97,8 @@
 
     <div class="container">
         <h4>Добавление новой детали:</h4>
-        <form th:method="POST" th:action="@{/part/add(login=${user.getLogin()}, password=${user.getPassword()})}" th:object="${newPart}">
+        <form th:method="POST" th:action="@{/part/add(login=${user.getLogin()}, password=${user.getPassword()})}"
+              th:object="${newPart}" onsubmit="if(!confirm('Вы уверены, что хотите сохранить деталь?')){return false;}">
             <table>
                 <tr>
                     <td>

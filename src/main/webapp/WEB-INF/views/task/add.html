@@ -86,7 +86,8 @@
 
 <div class="container">
     <h4>Добавление новой задачи:</h4>
-    <form th:method="POST" th:action="@{/task/add(login=${user.getLogin()}, password=${user.getPassword()})}" th:object="${newTask}">
+    <form th:method="POST" th:action="@{/task/add(login=${user.getLogin()}, password=${user.getPassword()})}"
+          th:object="${newTask}" onsubmit="if(!confirm('Вы уверены, что хотите сохранить задачу?')){return false;}">
         <table>
             <tr>
                 <td>
