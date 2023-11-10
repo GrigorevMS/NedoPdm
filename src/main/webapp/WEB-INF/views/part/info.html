@@ -86,6 +86,10 @@
 
 <div class="container">
     <h4>Информация о детали:</h4>
+    <a class="hrefbutton" th:href="@{/part/{id}/files(id=${part.getId()},
+                                                    login=${user.getLogin()},
+                                                    password=${user.getPassword()})}">
+        Прикрепленные файлы</a>
     <a class="hrefbutton" th:href="@{/part/{id}/update(id=${part.getId()},
                                                     login=${user.getLogin()},
                                                     password=${user.getPassword()})}">

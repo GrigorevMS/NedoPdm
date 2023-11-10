@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Nedo-PDM</title>
+    <title>Информация о детали</title>
     <style>
         .header {
             border: 1px solid black;
@@ -58,13 +58,12 @@
         .tasktext {
             width: 100%;
             box-sizing: border-box;
-            min-height: 100px;
+            min-height: 300px;
             resize: none;
         }
     </style>
 </head>
 <body style="zoom: 1.5">
-
 <div class="header">
     <table style="width: 100%">
         <tr>
@@ -86,45 +85,41 @@
 </div>
 
 <div class="container">
-    <form th:method="POST" th:action="@{/part/storage(login=${user.getLogin()}, password=${user.getPassword()})}"
-          th:object="${invoice}"
-          onsubmit="if (event.submitter.value == 'save'){if(!confirm('Вы уверены, что хотите подать ведомость?')){return false;}}">
-        <button style="background: white; color: red" type="submit" value="save" name="action">Сохранить</button>
-        <button style="background: white" type="submit" value="add" name="action">Добавить</button>
-        <button style="background: white" type="submit" value="pop" name="action">Убрать</button>
-        <br/>
-        <br/>
+    <form enctype="multipart/form-data" action="/uploadFile"
+          th:method="POST" th:action="@{/part/{id}/files(id=${part.getId()},
+                                                    login=${user.getLogin()},
+                                                    password=${user.getPassword()})}"
+          onsubmit="if(!confirm('Вы уверены, что хотите загрузить файл в систему?')) {return false;}">
         <table style="border:1px solid black; width: 100%">
             <thead>
-                <tr>
-                    <th>Действие</th>
-                    <th>Деталь</th>
-                    <th>Количество</th>
-                </tr>
+            <tr>
+                <th>Файл</th>
+                <th>Имя</th>
+                <th></th>
+            </tr>
             </thead>
             <tbody>
-                <tr th:each="line, itemStat : *{lines}">
-                    <td style="width: 33.3%">
-                        <select th:field="*{lines[__${itemStat.index}__].action}" style="width: 95%">
-                            <option th:value="get" th:text="Взял"/>
-                            <option th:value="put" th:text="Положил"/>
-                        </select>
-                    </td>
-                    <td style="width: 33.3%">
-                        <select th:field="*{lines[__${itemStat.index}__].partId}" style="width: 95%">
-                            <option th:each="part : ${parts}"
-                                    th:value="${part.getId()}"
-                                    th:text="${part.getDescription()} + ' - ' + ${part.getName()}"/>
-                        </select>
-                    </td>
-                    <td style="width: 33.3%">
-                        <input type="number" th:field="*{lines[__${itemStat.index}__].count}"
-                               style="width: 95%" required="required">
-                    </td>
-                </tr>
+            <tr>
+                <td style="width: 33.3%">
+                    <input style="width: 95%" type="file" name="fileforupdate" id="fileforupdate" required="required"><br/>
+                </td>
+                <td style="width: 33.3%">
+                    <input style="width: 95%" type="text" name="filename" id="filename" required="required"><br/>
+                </td>
+                <td style="width: 33.3%">
+                    <input style="color: #FF0000; width: 95%" type="submit" value="Загрузить в систему">
+                </td>
+            </tr>
             </tbody>
         </table>
     </form>
+</div>
+
+<div class="container">
+    <b>Обозначение: </b><a th:text="${part.getDescription()}"/><br/>
+    <b>Описание: </b><a th:text="${part.getName()}"/><br/>
+
+    <h4>Прикрепленные файлы:</h4>
 </div>
 
 </body>
