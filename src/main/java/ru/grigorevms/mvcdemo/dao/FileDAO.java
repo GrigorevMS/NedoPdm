@@ -1,6 +1,7 @@
 package ru.grigorevms.mvcdemo.dao;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.multipart.MultipartFile;
 import ru.grigorevms.mvcdemo.models.File;
 
 import java.sql.ResultSet;
@@ -19,9 +20,9 @@ public class FileDAO {
         try {
             if (!result.next()) return null;
             else {
-                return new File(result.getLong("id"),
+                return new File(/*result.getLong("id"),
                         result.getLong("parent"),
-                        result.getString("path"));
+                        result.getString("path")*/);
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -38,9 +39,9 @@ public class FileDAO {
         while (true) {
             try {
                 if (!result.next()) break;
-                files.add(new File(result.getLong("id"),
+                files.add(new File(/*result.getLong("id"),
                         result.getLong("parent"),
-                        result.getString("path")));
+                        result.getString("path")*/));
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
             }

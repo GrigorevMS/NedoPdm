@@ -7,13 +7,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ru.grigorevms.mvcdemo.dao.*;
-import ru.grigorevms.mvcdemo.models.Part;
-import ru.grigorevms.mvcdemo.models.StorageInvoice;
-import ru.grigorevms.mvcdemo.models.StorageInvoiceLine;
-import ru.grigorevms.mvcdemo.models.User;
+import ru.grigorevms.mvcdemo.models.*;
 
 import java.io.BufferedOutputStream;
-import java.io.File;
 import java.io.FileOutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -259,6 +255,7 @@ public class PartController {
     @GetMapping("/{id}/files")
     public String showAttachedFiles(@ModelAttribute("user") User user,
                                     @PathVariable("id") Long partId,
+                                    @ModelAttribute("newFile") File newFile,
                                     RedirectAttributes atr,
                                     Model model) {
         if (userDAO.checkUser(user.getLogin(), user.getPassword())) {
@@ -276,7 +273,7 @@ public class PartController {
     @PostMapping("{id}/files")
     public String uploadFile(@ModelAttribute("user") User user,
                              @PathVariable("id") Long partId,
-                             @RequestParam("filename") String name,
+                             @ModelAttribute("newFile") File newFile,
                              RedirectAttributes atr,
                              Model model) {
         if (userDAO.checkUser(user.getLogin(), user.getPassword())) {
@@ -284,7 +281,8 @@ public class PartController {
             atr.addAttribute("login", user.getLogin());
             atr.addAttribute("password", user.getPassword());
 
-            System.out.println(name);
+            System.out.println(newFile.getPath());
+            System.out.println(newFile.getFile());
 
             return "redirect:/part/{id}";
         }

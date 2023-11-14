@@ -85,10 +85,10 @@
 </div>
 
 <div class="container">
-    <form enctype="multipart/form-data" action="/uploadFile"
-          th:method="POST" th:action="@{/part/{id}/files(id=${part.getId()},
-                                                    login=${user.getLogin()},
-                                                    password=${user.getPassword()})}"
+    <form enctype="multipart/form-data" th:method="POST" th:object="${newFile}"
+          th:action="@{/part/{id}/files(id=${part.getId()},
+                                        login=${user.getLogin()},
+                                        password=${user.getPassword()})}"
           onsubmit="if(!confirm('Вы уверены, что хотите загрузить файл в систему?')) {return false;}">
         <table style="border:1px solid black; width: 100%">
             <thead>
@@ -101,10 +101,10 @@
             <tbody>
             <tr>
                 <td style="width: 33.3%">
-                    <input style="width: 95%" type="file" name="fileforupdate" id="fileforupdate" required="required"><br/>
+                    <input style="width: 95%" type="file" th:field="*{file}" required="required"><br/>
                 </td>
                 <td style="width: 33.3%">
-                    <input style="width: 95%" type="text" name="filename" id="filename" required="required"><br/>
+                    <input style="width: 95%" type="text" th:field="*{path}" required="required"><br/>
                 </td>
                 <td style="width: 33.3%">
                     <input style="color: #FF0000; width: 95%" type="submit" value="Загрузить в систему">
