@@ -283,6 +283,9 @@ public class PartController {
 
             System.out.println(newFile.getPath());
             System.out.println(newFile.getFile());
+            System.out.println(newFile.getFile().getName());
+            System.out.println(newFile.getFile().getContentType());
+            System.out.println(newFile.getFile().getOriginalFilename());
 
             return "redirect:/part/{id}";
         }

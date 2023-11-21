@@ -47,6 +47,7 @@ public class SpringConfig implements WebMvcConfigurer {
         return templateEngine;
     }
 
+    @Bean
     public CommonsMultipartResolver multipartResolver()
     {
         CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver();
