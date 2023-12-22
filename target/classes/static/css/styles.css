@@ -1,0 +1,40 @@
+.header {
+    border: 1px solid black;
+    box-shadow: 8px 8px 5px #444;
+    padding: 8px 12px;
+    background-image: linear-gradient(180deg, #fff, #ddd 40%, #ccc);
+    position: relative;
+    height: 20px;
+    margin-bottom: 10px;
+}
+.left {
+    position: absolute;
+    left: 5px;
+    top: auto;
+    bottom: auto;
+}
+.right {
+     position: absolute;
+     right: 5px;
+     top: auto;
+     bottom: auto;
+}
+.container {
+    border: 1px solid black;
+    box-shadow: 8px 8px 5px #444;
+    padding: 8px 12px;
+    background-image: linear-gradient(180deg, #fff, #ddd 40%, #ccc);
+    margin-bottom: 10px;
+}
+.task {
+    border: 1px solid black;
+    padding: 8px 12px;
+}
+.hrefbutton {
+    background: white;
+    color: red;
+    padding: 4px 6px;
+    border-radius: 3px;
+    border: 1px solid black;
+    text-decoration: none;
+}
