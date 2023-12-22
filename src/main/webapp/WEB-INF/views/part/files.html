@@ -85,27 +85,68 @@
 </div>
 
 <div class="container">
-    <h4>Информация о детали:</h4>
-    <a class="hrefbutton" th:href="@{/part/{id}/files(id=${part.getId()},
-                                                    login=${user.getLogin()},
-                                                    password=${user.getPassword()})}">
-        Прикрепленные файлы</a>
-    <a class="hrefbutton" th:href="@{/part/{id}/update(id=${part.getId()},
-                                                    login=${user.getLogin()},
-                                                    password=${user.getPassword()})}">
-        Изменить данные</a>
-    <a class="hrefbutton" th:href="@{/part/{id}/delete(id=${part.getId()},
-                                                    login=${user.getLogin()},
-                                                    password=${user.getPassword()})}"
-       onclick="if(!confirm('Вы уверены, что хотите удалить деталь?')){return false;}">
-        Удалить деталь</a><br/><br/>
-
     <b>Обозначение: </b><a th:text="${part.getDescription()}"/><br/>
     <b>Описание: </b><a th:text="${part.getName()}"/><br/>
-    <b>Принадлежит: </b><a th:each="description : ${parents}" th:text="${description} + '; '"/><br/>
-    <b>В наличии: </b><a th:text="${part.getCount()}"/><br/>
-    <b>Прочая информация: </b><br/>
-    <textarea class="tasktext" disabled="disabled" th:text="${part.getText()}"/>
 </div>
+
+<div class="container">
+    <form enctype="multipart/form-data" th:method="POST" th:object="${newFile}"
+          th:action="@{/part/{id}/files(id=${part.getId()},
+                                        login=${user.getLogin()},
+                                        password=${user.getPassword()})}"
+          onsubmit="if(!confirm('Вы уверены, что хотите загрузить файл в систему?')) {return false;}">
+        <table style="border:1px solid black; width: 100%">
+            <thead>
+            <tr>
+                <th>Файл</th>
+                <th>Описание</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td style="width: 33.3%">
+                    <input style="width: 95%" type="file" th:field="*{file}" required="required"><br/>
+                </td>
+                <td style="width: 33.3%">
+                    <input style="width: 95%" type="text" th:field="*{name}" required="required"><br/>
+                </td>
+                <td style="width: 33.3%">
+                    <input style="color: #FF0000; width: 95%" type="submit" value="Загрузить в систему">
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </form>
+</div>
+
+<div class="container">
+    <h4>Прикрепленные файлы:</h4>
+    <table style="border:1px solid black; width: 100%">
+        <thead>
+            <tr>
+                <th>Файл</th>
+                <th>Описание</th>
+                <th>Время</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="file : ${files}" style="border: solid black 1px">
+                <td style="width: 33.3%; word-break: break-all">
+                    <a th:text="${file.getPath()}" th:href="@{/download/{fileId}
+                                (login=${user.getLogin()}, password=${user.getPassword()}, fileId=${file.getId()})}"/>
+                </td>
+                <td style="width: 33.3%; word-break: break-all"; align="center">
+                    <a th:text="${file.getName()}"/>
+                </td>
+                <td style="width: 33.3%"; align="center">
+                    <a th:text="${file.getTime()}"/>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
 </body>
 </html>

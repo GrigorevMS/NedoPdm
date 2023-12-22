@@ -6,10 +6,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ru.grigorevms.mvcdemo.dao.*;
-import ru.grigorevms.mvcdemo.models.Part;
-import ru.grigorevms.mvcdemo.models.StorageInvoice;
-import ru.grigorevms.mvcdemo.models.StorageInvoiceLine;
-import ru.grigorevms.mvcdemo.models.User;
+import ru.grigorevms.mvcdemo.models.*;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -26,6 +23,8 @@ public class PartController {
     private PartDAO partDAO;
     @Autowired
     private Logger logger;
+    @Autowired
+    private FileDAO fileDAO;
 
     @GetMapping("/{id}")
     public String seePartInformation(@ModelAttribute("user") User user,
@@ -250,5 +249,47 @@ public class PartController {
             return "part/storage";
         }
         return "redirect:/login";
+    }
+
+    @GetMapping("/{id}/files")
+    public String showAttachedFiles(@ModelAttribute("user") User user,
+                                    @PathVariable("id") Long partId,
+                                    @ModelAttribute("newFile") File newFile,
+                                    RedirectAttributes atr,
+                                    Model model) {
+        if (userDAO.checkUser(user.getLogin(), user.getPassword())) {
+            user = userDAO.getUser(user.getLogin());
+            atr.addAttribute("login", user.getLogin());
+            atr.addAttribute("password", user.getPassword());
+
+            model.addAttribute("part", partDAO.getPart(partId));
+
+            newFile.setParent(partId);
+            model.addAttribute("files", fileDAO.getListOfFiles(partId));
+
+            return "part/files";
+        }
+        return "redirect:/login";
+    }
+
+    @PostMapping("{id}/files")
+    public String uploadFile(@ModelAttribute("user") User user,
+                             @PathVariable("id") Long partId,
+                             @ModelAttribute("newFile") File newFile,
+                             RedirectAttributes atr,
+                             Model model) {
+        if (userDAO.checkUser(user.getLogin(), user.getPassword())) {
+            user = userDAO.getUser(user.getLogin());
+            atr.addAttribute("login", user.getLogin());
+            atr.addAttribute("password", user.getPassword());
+
+            newFile.setParent(partId);
+
+            fileDAO.addFileToDatabase(newFile);
+            logger.writeLog(user, "upload file", "Upload file to storage");
+
+            return "redirect:/part/{id}/files";
+        }
+        return "rediret:/login";
     }
 }
