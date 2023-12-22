@@ -4,13 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ru.grigorevms.mvcdemo.dao.*;
 import ru.grigorevms.mvcdemo.models.*;
 
-import java.io.BufferedOutputStream;
-import java.io.FileOutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +23,8 @@ public class PartController {
     private PartDAO partDAO;
     @Autowired
     private Logger logger;
+    @Autowired
+    private FileDAO fileDAO;
 
     @GetMapping("/{id}")
     public String seePartInformation(@ModelAttribute("user") User user,
@@ -265,6 +264,9 @@ public class PartController {
 
             model.addAttribute("part", partDAO.getPart(partId));
 
+            newFile.setParent(partId);
+            model.addAttribute("files", fileDAO.getListOfFiles(partId));
+
             return "part/files";
         }
         return "redirect:/login";
@@ -281,13 +283,12 @@ public class PartController {
             atr.addAttribute("login", user.getLogin());
             atr.addAttribute("password", user.getPassword());
 
-            System.out.println(newFile.getPath());
-            System.out.println(newFile.getFile());
-            System.out.println(newFile.getFile().getName());
-            System.out.println(newFile.getFile().getContentType());
-            System.out.println(newFile.getFile().getOriginalFilename());
+            newFile.setParent(partId);
 
-            return "redirect:/part/{id}";
+            fileDAO.addFileToDatabase(newFile);
+            logger.writeLog(user, "upload file", "Upload file to storage");
+
+            return "redirect:/part/{id}/files";
         }
         return "rediret:/login";
     }

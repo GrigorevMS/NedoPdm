@@ -85,6 +85,11 @@
 </div>
 
 <div class="container">
+    <b>Обозначение: </b><a th:text="${part.getDescription()}"/><br/>
+    <b>Описание: </b><a th:text="${part.getName()}"/><br/>
+</div>
+
+<div class="container">
     <form enctype="multipart/form-data" th:method="POST" th:object="${newFile}"
           th:action="@{/part/{id}/files(id=${part.getId()},
                                         login=${user.getLogin()},
@@ -94,7 +99,7 @@
             <thead>
             <tr>
                 <th>Файл</th>
-                <th>Имя</th>
+                <th>Описание</th>
                 <th></th>
             </tr>
             </thead>
@@ -104,7 +109,7 @@
                     <input style="width: 95%" type="file" th:field="*{file}" required="required"><br/>
                 </td>
                 <td style="width: 33.3%">
-                    <input style="width: 95%" type="text" th:field="*{path}" required="required"><br/>
+                    <input style="width: 95%" type="text" th:field="*{name}" required="required"><br/>
                 </td>
                 <td style="width: 33.3%">
                     <input style="color: #FF0000; width: 95%" type="submit" value="Загрузить в систему">
@@ -116,10 +121,31 @@
 </div>
 
 <div class="container">
-    <b>Обозначение: </b><a th:text="${part.getDescription()}"/><br/>
-    <b>Описание: </b><a th:text="${part.getName()}"/><br/>
-
     <h4>Прикрепленные файлы:</h4>
+    <table style="border:1px solid black; width: 100%">
+        <thead>
+            <tr>
+                <th>Файл</th>
+                <th>Описание</th>
+                <th>Время</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="file : ${files}" style="border: solid black 1px">
+                <td style="width: 33.3%; word-break: break-all">
+                    <a th:text="${file.getPath()}" th:href="@{/download/{fileId}
+                                (login=${user.getLogin()}, password=${user.getPassword()}, fileId=${file.getId()})}"/>
+                </td>
+                <td style="width: 33.3%; word-break: break-all"; align="center">
+                    <a th:text="${file.getName()}"/>
+                </td>
+                <td style="width: 33.3%"; align="center">
+                    <a th:text="${file.getTime()}"/>
+                </td>
+            </tr>
+        </tbody>
+    </table>
 </div>
 
 </body>
